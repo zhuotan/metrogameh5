@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
     <head>
-      
+
         <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
         <style>
             body{ background-color: ivory; }
@@ -10,6 +10,9 @@
             }
         </style>
         <script>
+            document.ontouchmove = function (e) {
+                e.preventDefault();
+            }
             $(function () {
 
                 var canvas = document.getElementById("canvas");
@@ -57,7 +60,7 @@
                 function drawLines(toX, toY) {
                     // clear the canvas
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    
+
                     // redraw the image
                     drawTheImage(img, imageOpacity);
 
@@ -118,7 +121,7 @@
 
                     // Put your mousemove stuff here
                     drawLines(mouseX, mouseY);
-                   
+
                 }
 
 
