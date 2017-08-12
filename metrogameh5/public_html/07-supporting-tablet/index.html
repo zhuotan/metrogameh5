@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Untangle Puzzle Game in Canvas</title>
+        <link rel="stylesheet" href="css/untangle.css" />
+    </head>
+    <body>
+
+
+        <canvas id="game" width="964" height="460">
+            This is an interactive game with circles and lines connecting them.
+        </canvas>
+        <script src="js/jquery-2.1.3.min.js"></script>
+        <script>
+            document.ontouchmove = function (e) {
+                e.preventDefault();
+            }
+            $(function () {
+
+                var canvas = document.getElementById("game");
+                var ctx = canvas.getContext("2d");
+                var canvasOffset = $("#game").offset();
+                var offsetX = canvasOffset.left;
+                var offsetY = canvasOffset.top;
+
+                var startX, startY, mouseX, mouseY;
+                var isDown = false;
+
+                var lines = [];
+
+                var imageOpacity = 0.33;
+
+
+                function start() {
+
+                    ctx.strokeStyle = "green";
+                    ctx.lineWidth = 3;
+                    $("#game").bind("mousedown touchstart", function (e) {
+                        handleMouseDown(e);
+                    });
+                    $("#game").bind("mousemove touchmove", function (e) {
+
+                        handleMouseMove(e);
+                    });
+                    $("#game").bind("mouseup touchend", function (e) {
+
+                        handleMouseUp(e);
+                    });
+//                    $("#game").mousedown(function (e) {
+//                        handleMouseDown(e);
+//                    });
+//                    $("#game").mousemove(function (e) {
+//                        handleMouseMove(e);
+//                    });
+//                    $("#game").mouseup(function (e) {
+//                        handleMouseUp(e);
+//                    });
+                    $("#game").mouseout(function (e) {
+                        handleMouseUp(e);
+                    });
+                }
+
+                function drawLines(toX, toY) {
+                    // clear the canvas
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    // redraw all previous lines
+                    for (var i = 0; i < lines.length; i++) {
+                        drawLine(lines[i]);
+                    }
+
+                    // draw the current line
+                    drawLine({x1: startX, y1: startY, x2: mouseX, y2: mouseY});
+                }
+
+                function drawLine(line) {
+                    ctx.beginPath();
+                    ctx.moveTo(line.x1, line.y1);
+                    ctx.lineTo(line.x2, line.y2);
+                    ctx.stroke();
+                }
+
+                function handleMouseDown(e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    var touch = e.originalEvent.touches && e.originalEvent.touches[0];
+                    var pageX = (touch || e).pageX;
+                    var pageY = (touch || e).pageY;
+
+                    var canvasPosition = $("#game").offset();
+                    mouseX = pageX - canvasPosition.left;
+                    mouseY = pageY - canvasPosition.top;
+                    // Put your mousedown stuff here
+                    startX = mouseX;
+                    startY = mouseY;
+                    isDown = true;
+                }
+
+                function handleMouseUp(e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    // Put your mouseup stuff here
+                    isDown = false;
+                    lines.push({x1: startX, y1: startY, x2: mouseX, y2: mouseY});
+                }
+
+                function handleMouseMove(e) {
+                    if (!isDown) {
+                        return;
+                    }
+                    e.stopPropagation();
+                    e.preventDefault();
+                    var touch = e.originalEvent.touches && e.originalEvent.touches[0];
+                    var pageX = (touch || e).pageX;
+                    var pageY = (touch || e).pageY;
+
+                    var canvasPosition = $("#game").offset();
+                    mouseX = pageX - canvasPosition.left;
+                    mouseY = pageY - canvasPosition.top;
+
+                    // Put your mousemove stuff here
+                    drawLines(mouseX, mouseY);
+
+                }
+                start();
+
+            }); // end $(function(){});
+        </script>
+        <!--        <script src="js/untangle.data.js"></script>
+                <script src="js/untangle.drawing.js"></script>
+                <script src="js/untangle.input.js"></script>
+                <script src="js/untangle.js"></script>-->
+    </body>
+</html>
